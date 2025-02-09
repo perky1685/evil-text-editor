@@ -8,7 +8,7 @@ from win32 import win32api
 import random
 
 root = Tk()
-root.title('Text Editor')
+root.title('Evil Text Editor')
 #root.iconbitmap('D:/text editor/second one/woman-head.ico')
 root.geometry("1200x680")
 
@@ -18,6 +18,9 @@ open_status_name = False
 
 global selected
 selected = False
+
+global language
+language = "American English"
 
 #new file func
 def new_file():
@@ -274,6 +277,57 @@ def unpleasant_on():
     color_menu.config(bg=second_color, fg=text_color)
     options_menu.config(bg=second_color, fg=text_color)
 
+def american_english():
+    #menu drop downs
+    main_menu.entryconfigure(1, label="File")
+    main_menu.entryconfigure(2, label="Edit")
+    main_menu.entryconfigure(3, label="Color")
+    main_menu.entryconfigure(4, label="Options")
+    main_menu.entryconfigure(5, label="Language")
+    #buttons
+    bold_button.config(text = "Bold")
+    italics_button.config(text = "Italics")
+    redo_button.config(text = "Undo")
+    undo_button.config(text = "Redo")
+    color_text_button.config(text = "Text Color")
+    #window title
+    root.title('Evil Text Editor')
+
+def english_english():
+    #menu drop downs
+    main_menu.entryconfigure(1, label="File")
+    main_menu.entryconfigure(2, label="Edit")
+    main_menu.entryconfigure(3, label="Colour")
+    main_menu.entryconfigure(4, label="Options")
+    main_menu.entryconfigure(5, label="Language")
+    #buttons
+    bold_button.config(text = "Bold")
+    italics_button.config(text = "Italics")
+    redo_button.config(text = "Undo")
+    undo_button.config(text = "Redo")
+    color_text_button.config(text = "Text Colour")
+    #window title
+    root.title('Evil Text Editor')
+
+def cat_language():
+    #menu drop downs
+    main_menu.entryconfigure(1, label="Meow")
+    main_menu.entryconfigure(2, label="Meow")
+    main_menu.entryconfigure(3, label="Meow")
+    main_menu.entryconfigure(4, label="Meow")
+    main_menu.entryconfigure(5, label="Meow")
+    #buttons
+    bold_button.config(text = "Meow")
+    italics_button.config(text = "Meow")
+    redo_button.config(text = "Meow")
+    undo_button.config(text = "Meow")
+    color_text_button.config(text = "Meow")
+    #window title
+    root.title('Meow')
+    #status bar
+    status_bar.config(text="Meow    ")
+
+
 #toolbar frame
 toolbar_frame = Frame(root)
 toolbar_frame.pack(fill=X)
@@ -353,6 +407,13 @@ options_menu.add_command(label="Night Mode", command=night_on)
 options_menu.add_command(label="Light Mode", command=light_on)
 options_menu.add_command(label="Unpleasant Mode", command=unpleasant_on)
 
+#language menu
+language_menu = Menu(main_menu, tearoff=False)
+main_menu.add_cascade(label="Language", menu=language_menu)
+language_menu.add_command(label="American English", command=american_english)
+language_menu.add_command(label="English English", command=english_english)
+language_menu.add_command(label="Cat", command=cat_language)
+
 #status bar at the bottom
 status_bar = Label(root, text = 'Hi!    ', anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=random.randint(10, 15))
@@ -376,7 +437,7 @@ undo_button.grid(row = 0, column = 2, padx=random.randint(0,20))
 redo_button = Button(toolbar_frame, text = "Redo", command = text.edit_redo)
 redo_button.grid(row = 0, column = 3, padx=random.randint(0,20))
 #text colour
-color_text_button = Button(toolbar_frame, text="Text Colour", command=text_color)
+color_text_button = Button(toolbar_frame, text="Text Color", command=text_color)
 color_text_button.grid(row=0, column=4, padx=random.randint(0,20))
 
 
