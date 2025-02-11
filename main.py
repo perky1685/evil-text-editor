@@ -183,15 +183,30 @@ def text_color():
         else:
             text.tag_add("colored", "sel.first", "sel.last")
 
-def crit_chance(e):
-    if random.randint(0, 2) == 0:
-        last_char_index = text.index("end - 1c")
-        end_index = text.index("end")
+def crit_chance(event):
+    if random.random() < 0.05:
+        text_widget = event.widget
+        current_text = text_widget.get("1.0", END)
 
-        bigger_font = font.Font(family="Helvetica", size=99999) 
+        if current_text:
+            last_char_index = len(current_text) - 2
+            if last_char_index >= 0:
+                last_char = current_text[last_char_index]
+                text_widget.insert(END, last_char, "critical")
+                text_widget.see(END)
+                text_widget.tag_configure("critical", font=("TkDefaultFont", 64))
 
-        text.tag_configure("bigger", font=bigger_font)
-        text.tag_add("bigger", last_char_index, end_index)
+    if random.random() < 0.1:
+        string_in_text = text.get('1.0', 'end-1c')
+        string_length = len(string_in_text)
+        if string_length == 0:
+            random_index = 0
+        else:
+            random_index = random.randint(0, string_length)
+
+        text.insert(f"1.0 + {random_index} chars", "🐜")
+
+
 
 
 
@@ -376,7 +391,7 @@ def alien_language():
     #window title
     root.title('⟒⎐⟟⌰ ⏁⟒⌖⏁ ⟒⎅⟟⏁⍜⍀')
 
-def ant(e):
+def ant():
     if random.randint(0, 10) == 5:
         string_in_text = text.get('1.0', 'end-1c')
         string_length = len(string_in_text)
@@ -507,7 +522,6 @@ ant_button.grid(row=0, column=5, padx=random.randint(0,20))
 ant_bomb = Button(toolbar_frame, text="Destroy Ants", command=destroy_ants)
 ant_bomb.grid(row=0, column=6, padx=random.randint(0,20))
 
-root.bind("<Key>", ant)
 root.bind("<Key>", crit_chance)
 
 root.mainloop()
