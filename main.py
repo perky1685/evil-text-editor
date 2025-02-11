@@ -5,12 +5,16 @@ from tkinter import filedialog
 from tkinter import font
 from tkinter import colorchooser
 from win32 import win32api
-import tkinter.font as tkFont
 import random
+from tkinter import messagebox as mb
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 root = Tk()
 root.title('Evil Text Editor')
-#root.iconbitmap('D:/text editor/second one/woman-head.ico')
+root.iconbitmap(f'{os.getenv('PATH_TO_ICON')}')
 root.geometry("1200x680")
 
 # set variable for open file name
@@ -37,6 +41,9 @@ def new_file():
 
 #open file func
 def open_file():
+
+    mb.showwarning(title = "Warning!", message = "Please dont open any important files with this app.")
+
     text.delete("1.0", END)
     
     text_file = filedialog.askopenfilename(title="Open File", 
@@ -191,9 +198,10 @@ def crit_chance(event):
             last_char_index = len(current_text) - 2
             if last_char_index >= 0:
                 last_char = current_text[last_char_index]
-                text_widget.insert(END, last_char, "critical")
-                text_widget.see(END)
-                text_widget.tag_configure("critical", font=("TkDefaultFont", 64))
+                if last_char.isalnum():
+                    text_widget.insert(END, last_char, "critical")
+                    text_widget.see(END)
+                    text_widget.tag_configure("critical", font=("TkDefaultFont", 64))
 
     if random.random() < 0.1:
         string_in_text = text.get('1.0', 'end-1c')
@@ -208,13 +216,13 @@ def crit_chance(event):
         else:
             text.insert(f"1.0 + {random_index} chars", "🦇")
 
-    if random.random() < 0.2:
+    if random.random() < 0.01:
         if night == False:
-            night_on()
+            change_theme("night")
             replace_ants()
             night = True
         else:
-            light_on()
+            change_theme("light")
             replace_bats()
             night = False
 
@@ -246,102 +254,40 @@ def select_all(e):
 def clear_all():
     text.delete(1.0, END)
 
-#turn on night mode
-def night_on():
-    #colours
-    main_color = "#3C3C3C"
-    second_color = "#011627"
-    text_color = "#015FB8"
+def change_theme(theme):
+    if theme == "light":
+        main_color = "SystemButtonFace"
+        second_color = "SystemButtonFace"
+        text_color = "black"
+    if theme == "night":
+        main_color = "#3C3C3C"
+        second_color = "#011627"
+        text_color = "#015FB8"
+    if theme == "unpleasant":
+        main_color = "#32CD32"
+        second_color = "#BF40BF"
+        text_color = "#FF1300"
+    if theme == "random":
+        #okay let me explain myself
+        #first random.randint(0, 0xFFFFFF) generates a random hex number
+        #then, it removes the "0x" python puts there automatically (and the colour has to be a string)
+        main_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
+        second_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
+        text_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
 
-    #configure the color
-    root.config(bg=main_color)
-    status_bar.config(bg=main_color, fg=text_color)
-    text.config(bg=second_color, fg=text_color)
-    toolbar_frame.config(bg=main_color)
-    #buttons
-    bold_button.config(bg=second_color, fg=text_color)
-    italics_button.config(bg=second_color, fg=text_color)
-    redo_button.config(bg=second_color, fg=text_color)
-    undo_button.config(bg=second_color, fg=text_color)
-    color_text_button.config(bg=second_color, fg=text_color)
-    ant_button.config(bg=second_color, fg=text_color)
-    #file menu
-    file_menu.config(bg=second_color, fg=text_color)
-    edit_menu.config(bg=second_color, fg=text_color)
-    color_menu.config(bg=second_color, fg=text_color)
-    options_menu.config(bg=second_color, fg=text_color)
-
-#light mode
-def light_on():
-    #colours
-    main_color = "SystemButtonFace"
-    second_color = "SystemButtonFace"
-    text_color = "black"
-
-    #configure the color
-    root.config(bg=main_color)
-    status_bar.config(bg=main_color, fg=text_color)
-    text.config(bg="white", fg=text_color)
-    toolbar_frame.config(bg=main_color)
-    #buttons
-    bold_button.config(bg=second_color, fg=text_color)
-    italics_button.config(bg=second_color, fg=text_color)
-    redo_button.config(bg=second_color, fg=text_color)
-    undo_button.config(bg=second_color, fg=text_color)
-    color_text_button.config(bg=second_color, fg=text_color)
-    ant_button.config(bg=second_color, fg=text_color)
-    #file menu
-    file_menu.config(bg=second_color, fg=text_color)
-    edit_menu.config(bg=second_color, fg=text_color)
-    color_menu.config(bg=second_color, fg=text_color)
-    options_menu.config(bg=second_color, fg=text_color)
-
-#unpleasant mode
-def unpleasant_on():
-    #colours
-    main_color = "#32CD32"
-    second_color = "#BF40BF"
-    text_color = "#FF1300"
-
-    #configure the color
-    root.config(bg=main_color)
-    status_bar.config(bg=main_color, fg=text_color)
-    text.config(bg=main_color, fg=text_color)
-    toolbar_frame.config(bg=main_color)
-    #buttons
-    bold_button.config(bg=second_color, fg=text_color)
-    italics_button.config(bg=second_color, fg=text_color)
-    redo_button.config(bg=second_color, fg=text_color)
-    undo_button.config(bg=second_color, fg=text_color)
-    color_text_button.config(bg=second_color, fg=text_color)
-    ant_button.config(bg=second_color, fg=text_color)
-    #file menu
-    file_menu.config(bg=second_color, fg=text_color)
-    edit_menu.config(bg=second_color, fg=text_color)
-    color_menu.config(bg=second_color, fg=text_color)
-    options_menu.config(bg=second_color, fg=text_color)
-
-def random_on():
-    #okay let me explain myself
-    #first random.randint(0, 0xFFFFFF) generates a random hex number
-    #then, it removes the "0x" python puts there automatically (and the colour has to be a string)
-    main_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
-    second_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
-    text_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
-
-    #the string must be 6 characters long, and sometimes a low number is generated (e.g. 0xFF)
-    #so we just add 0s to the front, because 0000FF == FF
-    while len(main_color) < 6:
-        main_color = "0" + main_color
-    while len(second_color) < 6:
-        second_color = "0" + second_color
-    while len(text_color) < 6:
-        text_color = "0" + text_color
-    
-    #then, once we have our 6 digit hex number we can add a hashtag so that tkinter can understand it
-    main_color = "#" + main_color
-    second_color = "#" + second_color
-    text_color = "#" + text_color
+        #the string must be 6 characters long, and sometimes a low number is generated (e.g. 0xFF)
+        #so we just add 0s to the front, because 0000FF == FF
+        while len(main_color) < 6:
+            main_color = "0" + main_color
+        while len(second_color) < 6:
+            second_color = "0" + second_color
+        while len(text_color) < 6:
+            text_color = "0" + text_color
+        
+        #then, once we have our 6 digit hex number we can add a hashtag so that tkinter can understand it
+        main_color = "#" + main_color
+        second_color = "#" + second_color
+        text_color = "#" + text_color
 
     #configure the color
     root.config(bg=main_color)
@@ -444,8 +390,10 @@ def ant():
 
 def replace_ants():
     string_in_text = text.get('1.0', 'end-1c')
+
+    emojis = ["🦇", "💀", "🧙‍♀️", "👻", "🕷️"]
     
-    string_in_text = string_in_text.replace("🐜", "🦇")
+    string_in_text = string_in_text.replace("🐜", random.choice(emojis))
 
     text.delete("1.0", END)
     text.insert("1.0", string_in_text)
@@ -454,6 +402,10 @@ def replace_bats():
     string_in_text = text.get('1.0', 'end-1c')
     
     string_in_text = string_in_text.replace("🦇", "🐜")
+    string_in_text = string_in_text.replace("💀", "🐜")
+    string_in_text = string_in_text.replace("🧙‍♀️", "🐜")
+    string_in_text = string_in_text.replace("👻", "🐜")
+    string_in_text = string_in_text.replace("🕷️", "🐜")
 
     text.delete("1.0", END)
     text.insert("1.0", string_in_text)
@@ -532,10 +484,10 @@ color_menu.add_command(label="Background", command=background_color)
 #options menu
 options_menu = Menu(main_menu, tearoff=False)
 main_menu.add_cascade(label="Options", menu=options_menu)
-options_menu.add_command(label="Night Mode", command=night_on)
-options_menu.add_command(label="Light Mode", command=light_on)
-options_menu.add_command(label="Unpleasant Mode", command=unpleasant_on)
-options_menu.add_command(label="Random!!!", command=random_on)
+options_menu.add_command(label="Night Mode", command= lambda: change_theme("night"))
+options_menu.add_command(label="Light Mode", command= lambda: change_theme("light"))
+options_menu.add_command(label="Unpleasant Mode", command= lambda: change_theme("unpleasant"))
+options_menu.add_command(label="Random!!!",  command= lambda: change_theme("random"))
 
 #language menu
 language_menu = Menu(main_menu, tearoff=False)
