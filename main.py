@@ -23,10 +23,8 @@ selected = False
 global language
 language = "American English"
 
-fonts = {
-    "default": tkFont.Font(family="Helvetica", size=12),
-    "crit": tkFont.Font(family="Helvetica", size=24),
-}
+global night
+night = False
 
 #new file func
 def new_file():
@@ -44,7 +42,6 @@ def open_file():
     text_file = filedialog.askopenfilename(title="Open File", 
                                            filetypes = 
                                                (("Text Files", "*.txt"),
-                                                ("cum file", "*.cum"),
                                                 ("All Files", "*.*")))
 
     if text_file:
@@ -184,6 +181,8 @@ def text_color():
             text.tag_add("colored", "sel.first", "sel.last")
 
 def crit_chance(event):
+    global night
+    
     if random.random() < 0.05:
         text_widget = event.widget
         current_text = text_widget.get("1.0", END)
@@ -204,11 +203,20 @@ def crit_chance(event):
         else:
             random_index = random.randint(0, string_length)
 
-        text.insert(f"1.0 + {random_index} chars", "🐜")
+        if night == False:
+            text.insert(f"1.0 + {random_index} chars", "🐜")
+        else:
+            text.insert(f"1.0 + {random_index} chars", "🦇")
 
-
-
-
+    if random.random() < 0.2:
+        if night == False:
+            night_on()
+            replace_ants()
+            night = True
+        else:
+            light_on()
+            replace_bats()
+            night = False
 
 #change all text color
 def all_text_color():
@@ -257,7 +265,6 @@ def night_on():
     undo_button.config(bg=second_color, fg=text_color)
     color_text_button.config(bg=second_color, fg=text_color)
     ant_button.config(bg=second_color, fg=text_color)
-    ant_bomb.config(bg=second_color, fg=text_color)
     #file menu
     file_menu.config(bg=second_color, fg=text_color)
     edit_menu.config(bg=second_color, fg=text_color)
@@ -283,7 +290,6 @@ def light_on():
     undo_button.config(bg=second_color, fg=text_color)
     color_text_button.config(bg=second_color, fg=text_color)
     ant_button.config(bg=second_color, fg=text_color)
-    ant_bomb.config(bg=second_color, fg=text_color)
     #file menu
     file_menu.config(bg=second_color, fg=text_color)
     edit_menu.config(bg=second_color, fg=text_color)
@@ -309,7 +315,46 @@ def unpleasant_on():
     undo_button.config(bg=second_color, fg=text_color)
     color_text_button.config(bg=second_color, fg=text_color)
     ant_button.config(bg=second_color, fg=text_color)
-    ant_bomb.config(bg=second_color, fg=text_color)
+    #file menu
+    file_menu.config(bg=second_color, fg=text_color)
+    edit_menu.config(bg=second_color, fg=text_color)
+    color_menu.config(bg=second_color, fg=text_color)
+    options_menu.config(bg=second_color, fg=text_color)
+
+def random_on():
+    #okay let me explain myself
+    #first random.randint(0, 0xFFFFFF) generates a random hex number
+    #then, it removes the "0x" python puts there automatically (and the colour has to be a string)
+    main_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
+    second_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
+    text_color = str(random.randint(0, 0xFFFFFF)).upper()[2:]
+
+    #the string must be 6 characters long, and sometimes a low number is generated (e.g. 0xFF)
+    #so we just add 0s to the front, because 0000FF == FF
+    while len(main_color) < 6:
+        main_color = "0" + main_color
+    while len(second_color) < 6:
+        second_color = "0" + second_color
+    while len(text_color) < 6:
+        text_color = "0" + text_color
+    
+    #then, once we have our 6 digit hex number we can add a hashtag so that tkinter can understand it
+    main_color = "#" + main_color
+    second_color = "#" + second_color
+    text_color = "#" + text_color
+
+    #configure the color
+    root.config(bg=main_color)
+    status_bar.config(bg=main_color, fg=text_color)
+    text.config(bg=main_color, fg=text_color)
+    toolbar_frame.config(bg=main_color)
+    #buttons
+    bold_button.config(bg=second_color, fg=text_color)
+    italics_button.config(bg=second_color, fg=text_color)
+    redo_button.config(bg=second_color, fg=text_color)
+    undo_button.config(bg=second_color, fg=text_color)
+    color_text_button.config(bg=second_color, fg=text_color)
+    ant_button.config(bg=second_color, fg=text_color)
     #file menu
     file_menu.config(bg=second_color, fg=text_color)
     edit_menu.config(bg=second_color, fg=text_color)
@@ -330,7 +375,6 @@ def american_english():
     undo_button.config(text = "Redo")
     color_text_button.config(text = "Text Color")
     ant_button.config(text = "Ant")
-    ant_bomb.config(text = "Ant Bomb")
     #window title
     root.title('Evil Text Editor')
 
@@ -348,7 +392,6 @@ def english_english():
     undo_button.config(text = "Redo")
     color_text_button.config(text = "Text Colour")
     ant_button.config(text = "Ant")
-    ant_bomb.config(text = "Ant Bomb")
     #window title
     root.title('Evil Text Editor')
 
@@ -366,7 +409,6 @@ def cat_language():
     undo_button.config(text = "Meow")
     color_text_button.config(text = "Meow")
     ant_button.config(text = "Meow")
-    ant_bomb.config(text = "Meow")
     #window title
     root.title('Meow')
     #status bar
@@ -387,23 +429,34 @@ def alien_language():
     undo_button.config(text = "⍀⟒⎅⍜")
     color_text_button.config(text = "⏁⟒⌖⏁ ☊⍜⌰⍜⎍⍀")
     ant_button.config(text = "⏃⋏⏁")
-    ant_bomb.config(text = "⏃⋏⏁ ⏚⍜⋔⏚")
     #window title
     root.title('⟒⎐⟟⌰ ⏁⟒⌖⏁ ⟒⎅⟟⏁⍜⍀')
 
 def ant():
-    if random.randint(0, 10) == 5:
-        string_in_text = text.get('1.0', 'end-1c')
-        string_length = len(string_in_text)
-        if string_length == 0:
-            random_index = 0
-        else:
-            random_index = random.randint(0, string_length)
+    string_in_text = text.get('1.0', 'end-1c')
+    string_length = len(string_in_text)
+    if string_length == 0:
+        random_index = 0
+    else:
+        random_index = random.randint(0, string_length)
 
-        text.insert(f"1.0 + {random_index} chars", "🐜")
+    text.insert(f"1.0 + {random_index} chars", "🐜")
 
-def destroy_ants():
-    pass
+def replace_ants():
+    string_in_text = text.get('1.0', 'end-1c')
+    
+    string_in_text = string_in_text.replace("🐜", "🦇")
+
+    text.delete("1.0", END)
+    text.insert("1.0", string_in_text)
+
+def replace_bats():
+    string_in_text = text.get('1.0', 'end-1c')
+    
+    string_in_text = string_in_text.replace("🦇", "🐜")
+
+    text.delete("1.0", END)
+    text.insert("1.0", string_in_text)
 
 #toolbar frame
 toolbar_frame = Frame(root)
@@ -482,6 +535,7 @@ main_menu.add_cascade(label="Options", menu=options_menu)
 options_menu.add_command(label="Night Mode", command=night_on)
 options_menu.add_command(label="Light Mode", command=light_on)
 options_menu.add_command(label="Unpleasant Mode", command=unpleasant_on)
+options_menu.add_command(label="Random!!!", command=random_on)
 
 #language menu
 language_menu = Menu(main_menu, tearoff=False)
@@ -519,9 +573,8 @@ color_text_button.grid(row=0, column=4, padx=random.randint(0,20))
 #ants
 ant_button = Button(toolbar_frame, text="Ant", command=ant)
 ant_button.grid(row=0, column=5, padx=random.randint(0,20))
-ant_bomb = Button(toolbar_frame, text="Destroy Ants", command=destroy_ants)
-ant_bomb.grid(row=0, column=6, padx=random.randint(0,20))
 
+#TODO: make crits only happen on alphanumeric characters
 root.bind("<Key>", crit_chance)
 
 root.mainloop()
